@@ -1,0 +1,11 @@
+.wrapperPosts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+
+  .outlet {
+    min-height: 30vh;
+
+    width: 100%;
+  }
+}
