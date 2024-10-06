@@ -7,6 +7,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { fetchUserById } from "../../services/api";
+import useHttp from "../../hooks/useHttp";
 
 const UserDetails = () => {
   const { someonesId } = useParams();
@@ -16,8 +17,9 @@ const UserDetails = () => {
   //Тому треба записати state в goBack = useRef(location.state), тоді повертаю Link to = { goBack.current }
   const goBack = useRef(location.state);
 
+  //–––––––––––––––––––––––––––––––––––––––––––
   //(null) - значить що поки що користувача не існує
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   //_______________________________________________________
 
   //Хук що дозволяє переходити по навігації. Далі пишемо он клік на кнопку в розмітці
@@ -34,13 +36,16 @@ const UserDetails = () => {
   //   }, 3000);
   // }, [navigate]);
   //---------------------------------------------------------
-  useEffect(() => {
-    const getData = async () => {
-      const data = await fetchUserById(someonesId);
-      setUser(data);
-    };
-    getData();
-  }, [someonesId]);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const data = await fetchUserById(someonesId);
+  //     setUser(data);
+  //   };
+  //   getData();
+  // }, [someonesId]);
+
+  const [user] = useHttp(fetchUserById, someonesId);
+  //–––––––––––––––––––––––––––––––––––––––––––
 
   if (!user) return <h2>Loading...</h2>;
   //Рядок `if (!user) return <h2>Loading...</h2>;` є необхідним для правильного функціонування компонента, особливо під час перезавантаження сторінки.

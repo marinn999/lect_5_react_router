@@ -2,25 +2,30 @@ import { Suspense, useEffect, useState } from "react";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { fetchPostsByUserId } from "../../services/api";
 import s from "./PostsByUser.module.css";
+import useHttp from "../../hooks/useHttp";
 
 const PostsByUser = () => {
   const { someonesId } = useParams();
-  const [posts, setPosts] = useState([]);
-  useEffect(() => {
-    const getData = async () => {
-      const data = await fetchPostsByUserId(someonesId);
-      setPosts(data);
-    };
-    getData();
-  }, [someonesId]);
 
-  if (!posts.length) {
+  //–––––––––––––––––––––––––––––––
+  // const [posts, setPosts] = useState([]);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const data = await fetchPostsByUserId(someonesId);
+  //     setPosts(data);
+  //   };
+  //   getData();
+  // }, [someonesId]);
+  const [posts] = useHttp(fetchPostsByUserId, someonesId);
+  //–––––––––––––––––––––––––––––––
+
+  if (!posts?.length) {
     return <h2>This user has no posts yet.</h2>;
   }
   return (
     <div className={s.wrapperPosts}>
       <ul>
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <li key={post.id}>
             <Link to={`${post.id}/details`}>{post.title} </Link>
           </li>

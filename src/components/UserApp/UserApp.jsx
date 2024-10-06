@@ -2,9 +2,21 @@ import { useEffect, useState } from "react";
 import { fetchUsers } from "../../services/api";
 import { Link, useSearchParams, useLocation } from "react-router-dom";
 import FilterBar from "../FilterBar/FilterBar";
+import useHttp from "../../hooks/useHttp";
 
 const UserApp = () => {
-  const [users, setUsers] = useState([]);
+  //–––––––––––––––––––––––––––––––––––––––––––
+  // const [users, setUsers] = useState([]);
+
+  // useEffect(() => {
+  //   const getAllUsers = async () => {
+  //     const data = await fetchUsers();
+  //     setUsers(data);
+  //   };
+  //   getAllUsers();
+  // }, []);
+  const [users] = useHttp(fetchUsers);
+  //–––––––––––––––––––––––––––––––––––––––––––
 
   //Формую локацію хуком const location =useLocation(). Якомусь компоненту Link треба передати цю локацію стейтом state={location}
   const location = useLocation();
@@ -14,14 +26,6 @@ const UserApp = () => {
   //Витягаємо значення queryз  searchParams. Оскільки спочатку в поле інпуту нічого не введено,
   //то значення null, тому щоб сторінка не падала, пишу логічний оператор ?? і пусте поле «»
   const query = searchParams.get("query") ?? "";
-
-  useEffect(() => {
-    const getAllUsers = async () => {
-      const data = await fetchUsers();
-      setUsers(data);
-    };
-    getAllUsers();
-  }, []);
 
   const handleChangeQuery = (newQuery) => {
     if (!newQuery) {
@@ -38,7 +42,7 @@ const UserApp = () => {
   };
 
   //Відфільтровуюємо юзерів по тому, що пишу в query
-  const filteredData = users.filter(
+  const filteredData = users?.filter(
     (user) =>
       user.lastName.toLowerCase().includes(query.toLowerCase()) ||
       user.firstName.toLowerCase().includes(query.toLowerCase())
@@ -49,7 +53,7 @@ const UserApp = () => {
       <h2>Users</h2>
       <FilterBar handleChangeQuery={handleChangeQuery} />
       <ul>
-        {filteredData.map((user) => (
+        {filteredData?.map((user) => (
           <li key={user.id}>
             {/* state={location} це типу стрілка до вказаної локації const location */}
             {/* Типу поверни мене в це місце */}
